@@ -13,17 +13,12 @@ def send_telegram(text):
     )
 
 def check_booking():
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
+    headers = {"User-Agent": "Mozilla/5.0"}
     r = requests.get(MOVIE_URL, headers=headers)
-    page = r.text.lower()
-
-    if "book tickets" in page or "book now" in page:
-        send_telegram(f"🔥 TICKETS ARE LIVE!\n{MOVIE_URL}")
-        return True
-
-    return False
+    print("STATUS:", r.status_code)
+    print("PAGE LENGTH:", len(r.text))
+    print(r.text[:2000])  # print first 2000 characters
+    return True
 
 for _ in range(10):
     print("Checking movie page...")
