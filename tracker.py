@@ -4,8 +4,7 @@ import sys
 
 TOKEN = sys.argv[1]
 CHAT_ID = sys.argv[2]
-MOVIE = sys.argv[3]
-CITY = sys.argv[4]
+MOVIE_URL = sys.argv[3]
 
 def send_telegram(text):
     requests.get(
@@ -14,19 +13,20 @@ def send_telegram(text):
     )
 
 def check_booking():
-    url = f"https://in.bookmyshow.com/{CITY.lower().replace(' ', '-')}/movies"
-    r = requests.get(url)
-    
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+    r = requests.get(MOVIE_URL, headers=headers)
     page = r.text.lower()
 
-    if MOVIE.lower() in page and "book" in page:
-        send_telegram(f"🔥 TICKETS LIVE for {MOVIE} in {CITY}!\n{url}")
+    if "book tickets" in page or "book now" in page:
+        send_telegram(f"🔥 TICKETS ARE LIVE!\n{MOVIE_URL}")
         return True
 
     return False
 
 for _ in range(10):
-    print("Checking...")
+    print("Checking movie page...")
     if check_booking():
         break
     time.sleep(30)
